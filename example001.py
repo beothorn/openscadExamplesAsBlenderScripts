@@ -32,28 +32,28 @@ import bpy
 import mathutils
 from math import radians
 
-def setActive(meshName):
+def set_active(mesh_name):
 	bpy.ops.object.select_all(action='DESELECT')
-	bpy.context.scene.objects.active = bpy.data.objects[meshName]
-	bpy.data.objects[meshName].select = True
+	bpy.context.scene.objects.active = bpy.data.objects[mesh_name]
+	bpy.data.objects[mesh_name].select = True
 
-def difference(*meshNames):
-	first = meshNames[0]
-	for other in meshNames[1:]:
-		differenceOfTwo(first, other)
+def difference(*mesh_names):
+	first_mesh = mesh_names[0]
+	for other_mesh in mesh_names[1:]:
+		difference_of_two(first_mesh, other_mesh)
 
-def differenceOfTwo(mesh1, mesh2):
-	setActive(mesh1)
+def difference_of_two(mesh1, mesh2):
+	set_active(mesh1)
 	bpy.ops.object.modifier_add(type='BOOLEAN')
 	bpy.context.object.modifiers["Boolean"].object = bpy.data.objects[mesh2]
 	bpy.context.object.modifiers["Boolean"].operation = 'DIFFERENCE'
 	bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
-	setActive(mesh2)
+	set_active(mesh2)
 	bpy.ops.object.delete()	
 
-def rotate(objName,value,rotationArray):
-	setActive(objName)
-	bpy.ops.transform.rotate(value=value, axis=rotationArray)
+def rotate(obj_name,value,rotation_array):
+	set_active(obj_name)
+	bpy.ops.transform.rotate(value=value, axis=rotation_array)
 
 def sphere(r):
 	bpy.ops.mesh.primitive_uv_sphere_add(size=r)
@@ -67,9 +67,9 @@ def r_from_dia(d):
 	return d/2
 
 def rotcy(rot,r,h):
-	newcylinder=cylinder(r,h)
-	rotate(newcylinder,radians(90.0),rot)
-	return newcylinder
+	new_cylinder=cylinder(r,h)
+	rotate(new_cylinder,radians(90.0),rot)
+	return new_cylinder
 
 size = 50
 hole = 25
