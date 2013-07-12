@@ -33,28 +33,32 @@ def set_active(mesh_name):
 	bpy.context.scene.objects.active = bpy.data.objects[mesh_name]
 	bpy.data.objects[mesh_name].select = True
 
-def apply_boolean_modifier(*mesh_names,operation):
-        first_mesh = mesh_names[0]
-        for other_mesh in mesh_names[1:]:
-                boolean_modifier(first_mesh, other_mesh,operation)
+def apply_boolean_modifier(operation,mesh_names):
+	first_mesh = mesh_names[0]
+	resulting_mesh=first_mesh
+	for other_mesh in mesh_names[1:]:
+		resulting_mesh=boolean_modifier(first_mesh, other_mesh,operation)
+	return resulting_mesh
 
 def boolean_modifier(mesh1, mesh2, operation):
-        set_active(mesh1)
-        bpy.ops.object.modifier_add(type='BOOLEAN')
-        bpy.context.object.modifiers["Boolean"].object = bpy.data.objects[mesh2]
-        bpy.context.object.modifiers["Boolean"].operation = operation
-        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
-        set_active(mesh2)
-        bpy.ops.object.delete()
+	print(mesh1+" "+operation+" "+mesh2)
+	set_active(mesh1)
+	bpy.ops.object.modifier_add(type='BOOLEAN')
+	bpy.context.object.modifiers["Boolean"].object = bpy.data.objects[mesh2]
+	bpy.context.object.modifiers["Boolean"].operation = operation
+	bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+	set_active(mesh2)
+	bpy.ops.object.delete()
+	return mesh1
 
 def difference(*mesh_names):
-	apply_boolean_modifier(mesh_names,operation='DIFERENCE')
+	return apply_boolean_modifier('DIFFERENCE',mesh_names)
 
 def union(*mesh_names):
-        apply_boolean_modifier(mesh_names,operation='UNION')
+	return apply_boolean_modifier('UNION',mesh_names)
 
 def intersection(*mesh_names):
-        apply_boolean_modifier(mesh_names,operation='INTERSECT')
+	return apply_boolean_modifier('INTERSECT',mesh_names)
 
 def rotate(obj_name,value,rotation_array):
 	set_active(obj_name)
@@ -69,6 +73,7 @@ def cube(dimensions=(100,100,100),position=(0,0,0)):
 	bpy.ops.transform.resize(value=dimensions)
 	return bpy.context.object.name
 
+'''
 intersection(\
 	difference(\
 		union(\
@@ -83,3 +88,12 @@ intersection(\
 	),\
 	cone(50, 20, 5, (0,0,5))
 )
+'''
+
+union(\
+			 cube(dimensions=(50,10,10)),\
+			 cube(dimensions=(10,50,10)),\
+			 cube(dimensions=(10,10,50))\
+)\
+
+
